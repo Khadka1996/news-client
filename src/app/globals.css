@@ -1,0 +1,46 @@
+/* Tailwind v4 uses a single @import instead of the old
+   @tailwind base/components/utilities directives (v3 syntax). */
+@import "tailwindcss";
+
+/* v4 config lives in CSS via @theme, not tailwind.config.js.
+   These become usable as classes: bg-brand-dark, text-brand-gold, etc. */
+@theme {
+  --font-sans: var(--font-noto-sans-devanagari), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  --color-brand-dark: #0b1329;
+  --color-brand-navy: #101a34;
+  --color-brand-gold: #d97706;
+  --color-brand-gold-light: #f59e0b;
+  --color-positive: #16a34a;
+  --color-negative: #dc2626;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-100%); }
+}
+.animate-marquee {
+  display: inline-flex;
+  animation: marquee 30s linear infinite;
+}
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+body {
+  font-family: var(--font-sans);
+}
+
+/* Clamp long Nepali headlines to a fixed number of lines */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
