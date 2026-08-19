@@ -12,7 +12,7 @@ const statusColors: Record<string, string> = {
   rejected: "bg-red-100 text-red-700",
 };
 
-// Moderators get a read-only view of all blog posts — they can only act on
+// Moderators get a read-only view of all news posts — they can only act on
 // the ones still pending, via the review flow. No create/edit/delete here,
 // that's admin-only.
 export default function ModeratorNewsPage() {
@@ -31,7 +31,7 @@ export default function ModeratorNewsPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-extrabold text-brand-dark mb-1">Blog</h1>
+      <h1 className="text-2xl font-extrabold text-brand-dark mb-1">News</h1>
       <p className="text-sm text-neutral-500 mb-6">सबै समाचारहरूको सूची (हेर्ने मात्र — प्रकाशन Review बाट गर्नुहोस्)</p>
 
       <div className="flex gap-2 mb-4">

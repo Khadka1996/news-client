@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   Bell,
@@ -39,6 +39,7 @@ export default function DashboardTopbar({ role, user, onMenuClick }: DashboardTo
   const [searchQuery, setSearchQuery] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [avatarFailed, setAvatarFailed] = useState(false);
   const [notifications, setNotifications] = useState<AppNotification[]>(
     role === "admin" ? adminNotifications : moderatorNotifications
   );
@@ -48,6 +49,10 @@ export default function DashboardTopbar({ role, user, onMenuClick }: DashboardTo
   const designation = getUserDesignation(user);
   const avatarColor = getAvatarColor(user);
   const initial = displayName.charAt(0).toUpperCase();
+
+  useEffect(() => {
+    setAvatarFailed(false);
+  }, [user.avatar]);
 
   const markAsRead = (id: string) => {
     setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)));
@@ -169,12 +174,7 @@ export default function DashboardTopbar({ role, user, onMenuClick }: DashboardTo
               <p className="text-sm font-semibold text-neutral-900">{displayName}</p>
               <p className="text-xs text-neutral-500">{designation}</p>
             </div>
-            <div
-              className="w-9 h-9 rounded-full flex items-center justify-center text-white font-medium overflow-hidden shrink-0"
-              style={{ backgroundColor: avatarColor }}
-            >
-              {initial}
-            </div>
+            {user.avatar && !avatarFailed ? <img src={user.avatar} alt={`${displayName} avatar`} onError={() => setAvatarFailed(true)} className="h-9 w-9 shrink-0 rounded-full object-cover" /> : <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-white font-medium" style={{ backgroundColor: avatarColor }}>{initial}</div>}
             <ChevronDown size={16} className="hidden sm:block text-neutral-400" />
           </button>
 

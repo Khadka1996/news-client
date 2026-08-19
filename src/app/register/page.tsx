@@ -34,8 +34,8 @@ function RegisterPageContent() {
       return;
     }
 
-    if (password.length < 6) {
-      setError("पासवर्ड कम्तिमा ६ क्यारेक्टर लामो हुनुपर्छ");
+    if (password.length < 8 || !/[A-Za-z]/.test(password) || !/\d/.test(password)) {
+      setError("पासवर्ड कम्तिमा ८ क्यारेक्टरको र अक्षर तथा अंकसहित हुनुपर्छ");
       return;
     }
 

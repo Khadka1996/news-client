@@ -1,6 +1,6 @@
 "use client";
 
-import { getAccessToken } from "@/lib/auth";
+import { getAccessToken, refreshAccessToken } from "@/lib/auth";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
 
@@ -102,11 +102,19 @@ async function fetchJson<T>(url: string, init: RequestInit = {}): Promise<T> {
     headers.set("Accept", "application/json");
   }
 
-  const response = await fetch(url, {
+  let response = await fetch(url, {
     credentials: "include",
     ...init,
     headers,
   });
+
+  if (response.status === 401 && token) {
+    const refreshedToken = await refreshAccessToken();
+    if (refreshedToken) {
+      headers.set("Authorization", `Bearer ${refreshedToken}`);
+      response = await fetch(url, { credentials: "include", ...init, headers });
+    }
+  }
 
   const contentType = response.headers.get("content-type") || "";
   const payload = contentType.includes("application/json") ? await response.json() : await response.text();

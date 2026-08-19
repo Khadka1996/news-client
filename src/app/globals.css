@@ -1,6 +1,24 @@
 /* Tailwind v4 uses a single @import instead of the old
    @tailwind base/components/utilities directives (v3 syntax). */
 @import "tailwindcss";
+@import "react-quill-new/dist/quill.snow.css";
+
+.article-editor .ql-toolbar.ql-snow {
+  border: 0;
+  border-bottom: 1px solid #e5e7eb;
+  background: #f9fafb;
+}
+
+.article-editor .ql-container.ql-snow {
+  min-height: 32rem;
+  border: 0;
+}
+
+.article-editor .ql-editor {
+  min-height: 32rem;
+  color: #1f2937;
+  font-size: 0.95rem;
+}
 
 /* v4 config lives in CSS via @theme, not tailwind.config.js.
    These become usable as classes: bg-brand-dark, text-brand-gold, etc. */
@@ -31,6 +49,21 @@ body {
   font-family: var(--font-sans);
 }
 
+input[type="checkbox"] {
+  appearance: none;
+  width: 2.75rem;
+  height: 1.5rem;
+  border-radius: 9999px;
+  background: #d1d5db;
+  background-image: radial-gradient(circle at 0.75rem 0.75rem, #ffffff 0.45rem, transparent 0.48rem);
+  cursor: pointer;
+  transition: background-color 150ms ease, background-position 150ms ease;
+}
+
+input[type="checkbox"]:checked {
+  background-color: #d97706;
+  background-position: 1.25rem 0;
+}
 /* Clamp long Nepali headlines to a fixed number of lines */
 .line-clamp-2 {
   display: -webkit-box;
@@ -43,4 +76,12 @@ body {
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+/* Keep long author bios readable inside the management table. */
+td.max-w-md {
+  width: 18rem;
+  max-width: 18rem;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }

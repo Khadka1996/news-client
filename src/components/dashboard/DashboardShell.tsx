@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import DashboardSidebar from "./DashboardSidebar";
 import DashboardTopbar from "./DashboardTopbar";
-import { fetchCurrentUserFromApi, getCurrentUser, getRoleLandingPath, logout, normalizeRole } from "@/lib/auth";
+import { fetchCurrentUserFromApi, getRoleLandingPath, logout, normalizeRole } from "@/lib/auth";
 import { MockUser, UserRole } from "@/data/users";
 
 export default function DashboardShell({ role, children }: { role: UserRole; children: React.ReactNode }) {
@@ -18,8 +18,7 @@ export default function DashboardShell({ role, children }: { role: UserRole; chi
 
   useEffect(() => {
     const loadUser = async () => {
-      const localUser = getCurrentUser();
-      const current = localUser ? localUser : await fetchCurrentUserFromApi();
+      const current = await fetchCurrentUserFromApi();
 
       if (!current) {
         await logout();

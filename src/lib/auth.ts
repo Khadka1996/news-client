@@ -5,6 +5,7 @@ import { MockUser, UserRole, DEFAULT_AVATAR_COLOR } from "@/data/users";
 const STORAGE_KEY = "shikka_auth_user";
 const TOKEN_KEY = "shikka_auth_token";
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
+let refreshPromise: Promise<string | null> | null = null;
 
 export function normalizeRole(role?: string): UserRole {
   switch ((role || "").toUpperCase()) {
@@ -32,6 +33,39 @@ function saveAuthSession(user: MockUser, accessToken: string) {
   if (typeof window === "undefined") return;
   localStorage.setItem(TOKEN_KEY, accessToken);
   localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
+}
+
+export async function refreshAccessToken(): Promise<string | null> {
+  if (typeof window === "undefined") return null;
+  if (refreshPromise) return refreshPromise;
+
+  refreshPromise = (async () => {
+    try {
+      const response = await fetch(`${API_URL}/auth/refresh`, {
+        method: "POST",
+        credentials: "include",
+        headers: { Accept: "application/json" },
+      });
+      if (!response.ok) {
+        clearAuthSession();
+        return null;
+      }
+      const payload = await response.json() as { accessToken?: string };
+      if (!payload.accessToken) {
+        clearAuthSession();
+        return null;
+      }
+      localStorage.setItem(TOKEN_KEY, payload.accessToken);
+      return payload.accessToken;
+    } catch {
+      clearAuthSession();
+      return null;
+    } finally {
+      refreshPromise = null;
+    }
+  })();
+
+  return refreshPromise;
 }
 
 function toClientUser(
@@ -85,11 +119,20 @@ async function fetchJson<T>(url: string, init: RequestInit = {}): Promise<T> {
       headers.set("Accept", "application/json");
     }
 
-    const res = await fetch(url, {
+    let res = await fetch(url, {
       credentials: "include",
       ...init,
       headers,
     });
+
+    const canRefresh = !url.endsWith("/auth/login") && !url.endsWith("/auth/register") && !url.endsWith("/auth/refresh") && !url.endsWith("/auth/logout");
+    if (res.status === 401 && canRefresh && getAccessToken()) {
+      const refreshedToken = await refreshAccessToken();
+      if (refreshedToken) {
+        headers.set("Authorization", `Bearer ${refreshedToken}`);
+        res = await fetch(url, { credentials: "include", ...init, headers });
+      }
+    }
 
     const contentType = res.headers.get("content-type") || "";
     const payload = contentType.includes("application/json") ? await res.json() : await res.text();
@@ -182,6 +225,17 @@ export async function updateCurrentUserProfile(input: {
   const user = toClientUser(payload.user);
   saveAuthSession(user, token);
   return user;
+}
+
+export async function changeCurrentUserPassword(input: { currentPassword: string; newPassword: string }): Promise<void> {
+  const token = getAccessToken();
+  if (!token) throw new Error("Not authenticated");
+
+  await fetchJson<{ message: string }>(`${API_URL}/auth/change-password`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+    body: JSON.stringify(input),
+  });
 }
 
 export async function fetchUsersForManagement(): Promise<MockUser[]> {

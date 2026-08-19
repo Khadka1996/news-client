@@ -6,6 +6,7 @@ import {
   Newspaper,
   PlusCircle,
   Tag,
+  UserRoundPen,
   Video,
   Megaphone,
   BarChart3,
@@ -36,9 +37,10 @@ interface NavItem {
 // actually need to do their job — this is the "different fields" per role.
 const adminNavItems: NavItem[] = [
   { label: "Dashboard", href: "/dashboard/admin", icon: LayoutDashboard },
-  { label: "Blog", href: "/dashboard/admin/news", icon: Newspaper },
-  { label: "Create Blog", href: "/dashboard/admin/news/new", icon: PlusCircle },
+  { label: "News", href: "/dashboard/admin/news", icon: Newspaper },
+  { label: "Create News", href: "/dashboard/admin/news/new", icon: PlusCircle },
   { label: "Create Categories", href: "/dashboard/admin/categories", icon: Tag },
+  { label: "Manage Authors", href: "/dashboard/admin/authors", icon: UserRoundPen },
   { label: "Manage Video", href: "/dashboard/admin/videos", icon: Video },
   { label: "Manage Advertisement", href: "/dashboard/admin/advertisements", icon: Megaphone },
   { label: "Analytics", href: "/dashboard/admin/analytics", icon: BarChart3 },
@@ -53,7 +55,7 @@ const adminAccountItems: NavItem[] = [
 
 const moderatorNavItems: NavItem[] = [
   { label: "Dashboard", href: "/dashboard/moderator", icon: LayoutDashboard },
-  { label: "Blog", href: "/dashboard/moderator/news", icon: Newspaper },
+  { label: "News", href: "/dashboard/moderator/news", icon: Newspaper },
 ];
 
 const moderatorAccountItems: NavItem[] = [
